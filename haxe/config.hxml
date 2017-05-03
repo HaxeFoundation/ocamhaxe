@@ -1,0 +1,4 @@
+-main Config
+-cpp bin
+-cmd copy bin\config.exe .
+-cmd rm -rf bin
