@@ -64,7 +64,7 @@ class Build {
 
 		var opamPath = Sys.getCwd().split("\\").join("/")+".opam";
 		cygCommand("bin/opam",["init","--yes","--root",opamPath,"default","https://github.com/fdopen/opam-repository-mingw.git","--comp",ocaml,"--switch",ocaml]);
-		cygCommand("bin/opam",["install","--yes","--root",opamPath,"sedlex","camlp4","merlin"]);
+		cygCommand("bin/opam",["install","--yes","--root",opamPath,"sedlex","camlp4","merlin";"extlib";"xml-light";"camlzip"]);
 	}
 
 	static function main() {
