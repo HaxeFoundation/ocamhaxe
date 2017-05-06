@@ -4,3 +4,5 @@
 /lib
 /install.sh
 bin
+/mingw/usr
+/mingw/lib

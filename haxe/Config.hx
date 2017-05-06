@@ -1,6 +1,17 @@
+
 class Config {
 
-	public static var REQUIRED_TOOLS = ["bash", "cygpath", "i686-w64-mingw32-ar", "i686-w64-mingw32-as", "i686-w64-mingw32-gcc", "i686-w64-mingw32-ld", "i686-w64-mingw32-ranlib", "ls", "make", "mkdir", "mv", "rm", "rsync", "sed", "sh", "stty", "tput", "tr", "true"];
+	static var CFG : {
+		var ocamlVersion : String;
+		var cygwinTools : Array<String>;
+		var mingwLibs : Array<String>;
+		var opamLibs : Array<String>;
+	} = loadConfig();
+
+	static function loadConfig() {
+		var content = try sys.io.File.getContent("haxe/config.json") catch( e : Dynamic ) sys.io.File.getContent("config.json");
+		return haxe.Json.parse(content);
+	}
 
 	function new() {
 	}
@@ -63,10 +74,17 @@ class Config {
 		var p = new sys.io.Process("where.exe",["cygpath.exe"]);
 		var cygwinPath = null;
 		if( p.exitCode() == 0 ) {
-			cygwinPath = StringTools.trim(p.stdout.readAll().toString()).substr(0,-11);
+			cygwinPath = StringTools.trim(p.stdout.readAll().toString()).substr(0,-15);
 			log("Cygwin found in "+cygwinPath);
 
-			// TODO : check tools that are required to compile
+			for( f in CFG.cygwinTools )
+				if( !sys.FileSystem.exists(cygwinPath+"/bin/"+f+".exe") )
+					throw "Missing required cygwin tool: "+f;
+
+			var mingw = cygwinPath+"/usr/i686-w64-mingw32/sys-root/mingw";
+			for( lib in CFG.mingwLibs )
+				if( !sys.FileSystem.exists(mingw+"/bin/"+lib+".dll") )
+					throw "Missing mingw library: "+lib+" (in "+mingw+"/bin)";
 
 		} else {
 			log("Cygwin not found");
@@ -105,7 +123,7 @@ class Config {
 		// apply environment changes
 		// using regedit is the best to preserve PATH with special chars
 		log("Updating Environment...");
-		var regConf = sys.io.File.getContent("config/reg.conf");
+		var regConf = sys.io.File.getContent("haxe/reg.conf");
 		regConf = regConf.split("$newPath").join(utf2hex(foundPath));
 
 		var f = sys.io.File.write(temp);
@@ -117,14 +135,6 @@ class Config {
 		var cwd = Sys.getCwd();
 		var paths = [cwd+"bin"];
 		var ocamlPath = null;
-
-		/*
-			It would be nice to init opam and download ocaml from here
-			but I couldn't manage to make it work on my setup...
-			It keep complaining that tools such as make etc are not found
-			while they available in both windows and cygwin shell.
-			So let's ship it with ocaml+ocamlfind already installed
-		*/
 
 		// look for ocaml in opam
 		for( f in sys.FileSystem.readDirectory(".opam") )
@@ -139,6 +149,7 @@ class Config {
 
 		command("setx",["OCAMLLIB",ocamlPath+"/lib/ocaml"]);
 		command("setx",["OCAMLFIND_CONF",ocamlPath+"/lib/findlib.conf"]);
+		command("setx", ["OCAMROOT", cwd+".opam"]);
 
 		// add our cygwin/MinGW local install
 		if( cygwinPath == null )
@@ -148,16 +159,14 @@ class Config {
 
 
 		// setup ld.conf
-		var f = sys.io.File.getContent("config/ld.conf");
+		var f = sys.io.File.getContent("haxe/ld.conf");
 		f = f.split("$ocamlPath").join(ocamlPath);
 		sys.io.File.saveContent(ocamlPath + "/lib/ocaml/ld.conf", f);
 
 		// setup ocamlfind
-		var f = sys.io.File.getContent("config/findlib.conf");
+		var f = sys.io.File.getContent("haxe/findlib.conf");
 		f = f.split("$ocamlPath").join(ocamlPath.split("\\").join("\\\\"));
 		sys.io.File.saveContent(ocamlPath + "/lib/findlib.conf", f);
-
-
 	}
 
 	function run() {
