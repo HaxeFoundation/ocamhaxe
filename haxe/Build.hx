@@ -140,6 +140,7 @@ class Build {
 	}
 
 	static function main() {
+		if( sys.FileSystem.exists("Build.hx") ) Sys.setCwd("..");
 		new Build().build();
 	}
 

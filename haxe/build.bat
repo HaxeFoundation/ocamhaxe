@@ -1,4 +1,3 @@
 @echo off
-cd ..
-haxe -cp haxe --interp -main Build
+haxe --interp -main Build
 pause
