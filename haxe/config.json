@@ -1,6 +1,6 @@
 {
 	"ocamlVersion" : "4.03.0",
-	"cygwinTools" : ["bash", "cygpath", "i686-w64-mingw32-ar", "i686-w64-mingw32-as", "i686-w64-mingw32-gcc", "i686-w64-mingw32-ld", "i686-w64-mingw32-ranlib", "ls", "make", "mkdir", "wget", "mv", "rm", "rsync", "sed", "sh", "stty", "tput", "tr", "true"],
+	"cygwinTools" : ["bash", "cygpath", "i686-w64-mingw32-ar", "i686-w64-mingw32-as", "i686-w64-mingw32-gcc", "i686-w64-mingw32-ld", "i686-w64-mingw32-ranlib", "ls", "make", "mkdir", "wget", "mv", "rm", "rsync", "sed", "sh", "stty", "tput", "tr", "true", "cp"],
 	"mingwLibs" : ["zlib1", "libpcre-1"],
 	"opamLibs" : ["sedlex","camlp4","merlin","extlib","xml-light","camlzip","rope","ptmap"]
 }
