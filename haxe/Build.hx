@@ -127,7 +127,8 @@ class Build {
 		var opamRoot = cwd+".opam";
 
 		// temporarily modify the env
-		Sys.putEnv("PATH", cwd+"bin;" + Sys.getEnv("PATH"));
+		// setting cygwin with highest priority is necessary
+		Sys.putEnv("PATH", cwd+"bin;" + cygwinPath + ";" + Sys.getEnv("PATH"));
 		Sys.putEnv("OPAMROOT", opamRoot);
 
 		if( !sys.FileSystem.exists(opamRoot) )
