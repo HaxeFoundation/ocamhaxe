@@ -15,7 +15,7 @@ Required Cygwin packages are:
 
 Troubleshoot:
 
-- In some cases there is an error about prims.c of ocaml not compiling. It seems to be related to newline endings (Makefile sed script outputs "name-of-prim\r\n" instead of "name-of-prim"), running through bash does not help. Not sure yet what to do about it.
+- In some cases there is an error about prims.c of ocaml not compiling. It requires changing your system PATH so that Cygwin path has the highest priority. Also make sure to have git for Cygwin installed.
 
 ### About
 
