@@ -34,7 +34,7 @@ class Build {
 	function cygCopyFile( file : String ) {
 
 		copiedFiles.set(file, true);
-		try sys.io.File.copy(cygwinPath + "/" + file, "mingw/" + file) catch( e : Int ) log("*** MISSING " + file+" in your Cygwin install ***");
+		try sys.io.File.copy(cygwinPath + "/" + file, "mingw/" + file) catch( e : Dynamic ) log("*** MISSING " + file+" in your Cygwin install ***");
 
 		if( !StringTools.endsWith(file.toLowerCase(),".exe") && !StringTools.endsWith(file.toLowerCase(),".dll") )
 			return;

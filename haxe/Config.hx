@@ -149,7 +149,7 @@ class Config {
 
 		command("setx",["OCAMLLIB",ocamlPath+"/lib/ocaml"]);
 		command("setx",["OCAMLFIND_CONF",ocamlPath+"/lib/findlib.conf"]);
-		command("setx", ["OCAMROOT", cwd+".opam"]);
+		command("setx", ["OPAMROOT", cwd+".opam"]);
 
 		// add our cygwin/MinGW local install
 		if( cygwinPath == null )
