@@ -20,7 +20,7 @@ Required Cygwin packages are:
 Troubleshoot:
 
 - You need to run `Build.exe` from the command line (`cmd`) to watch for errors
-- In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires changing your system PATH so that Cygwin path has the highest priority. Also make sure to have git for Cygwin installed.
+- In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires having git for Cygwin installed (prevents windows newline issues). Also make sure that your system PATH has Cygwin at the highest priority to prevent clashes.
 
 ### About
 
