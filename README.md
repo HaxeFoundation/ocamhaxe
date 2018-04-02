@@ -9,9 +9,13 @@ If you have download this as a distribution, simply run `config.bat` to have it 
 If you have cloned the repository, you need to run the Build script in /build to rebuild the ocamhaxe distribution. This requires Cygwin  + Dumpbin.exe windows utility (part of Visual Studio)
 
 Required Cygwin packages are:
+  - wget
+  - m4
   - patch
   - unzip
-  - mingw[64]-i686-gcc
+  - mingw[64]-i686-gcc-core
+  - mingw[64]-i686-zlib
+  - mingw[64]-i686-pcre
 
 Troubleshoot:
 
