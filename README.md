@@ -6,7 +6,7 @@ If you have download this as a distribution, simply run `config.bat` to have it 
 
 # Build
 
-If you have cloned the repository, you need to run the Build script in /build to rebuild the ocamhaxe distribution. This requires Cygwin  + Dumpbin.exe windows utility (part of Visual Studio)
+If you have cloned the repository, you need to run the `Build.exe` script in /build to rebuild the ocamhaxe distribution. This requires Cygwin  + Dumpbin.exe windows utility (part of Visual Studio)
 
 Required Cygwin packages are:
   - wget
@@ -19,6 +19,7 @@ Required Cygwin packages are:
 
 Troubleshoot:
 
+- You need to run `Build.exe` from the command line (`cmd`) to watch for errors
 - In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires changing your system PATH so that Cygwin path has the highest priority. Also make sure to have git for Cygwin installed.
 
 ### About
