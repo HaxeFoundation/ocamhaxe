@@ -117,9 +117,13 @@ class Config {
 				break;
 			}
 		}
-		if( foundPath.toUpperCase().indexOf("%OCAMHAXE%") < 0 )
-			foundPath += ";%OCAMHAXE%";
-
+		if( foundPath.toUpperCase().indexOf("%OCAMHAXE%") < 0 ) {
+			if( StringTools.endsWith(foundPath,";") )
+				foundPath += "%OCAMHAXE%;";
+			else
+				foundPath += ";%OCAMHAXE%";
+		}
+			
 		// apply environment changes
 		// using regedit is the best to preserve PATH with special chars
 		log("Updating Environment...");
