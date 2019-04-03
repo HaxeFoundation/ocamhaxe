@@ -51,14 +51,23 @@ class Build {
 			cygCopyFile("bin/"+f);
 		}
 	}
+	
+	function getExePath( exeFile : String ) {
+		var p = new sys.io.Process("where.exe",[exeFile]);
+		if( p.exitCode() != 0 )
+			return null;
+		var out = StringTools.trim(p.stdout.readAll().toString());
+		return out.substr(0,-(exeFile.length+1));
+	}
 
 	function detectCygwin() {
-		var p = new sys.io.Process("where.exe",["cygpath.exe"]);
-		if( p.exitCode() != 0 ) {
+		var path = getExePath("cygpath.exe");
+		if( path == null ) {
 			log("Cygwin not found");
 			Sys.exit(1);
 		}
-		cygwinPath = StringTools.trim(p.stdout.readAll().toString()).substr(0,-15);
+		cygwinPath = path.substr(0,-3);
+		log("Cygwin found in "+cygwinPath);
 	}
 
 	function cygCopyDir( dir : String ) {
@@ -90,22 +99,26 @@ class Build {
 	function build() {
 
 		// build minimal mingw distrib to use if the user doesn't have cygwin installed
+		
+		var bits = CFG.is64 ? 64 : 32;
+		var mingw = CFG.is64 ? "x86_64-w64-mingw32" : "i686-w64-mingw32";
 
 		detectCygwin();
+			
 		Sys.println("Preparing mingw distrib...");
 		makeDir("mingw/bin");
 		for( f in CFG.cygwinTools )
-			cygCopyFile("bin/"+ f + ".exe");
-		cygCopyDir("usr/i686-w64-mingw32");
-		cygCopyDir("lib/gcc/i686-w64-mingw32");
+			cygCopyFile("bin/"+ f.split("$MINGW").join(mingw) + ".exe");
+		cygCopyDir('usr/$mingw');
+		cygCopyDir('lib/gcc/$mingw');
 		makeDir("mingw/tmp");
 
 		// build opam repo with packages necessary for haxe
 
 		Sys.println("Preparing opam...");
 
-		var opam = "opam32.tar.xz";
-		var ocaml = CFG.ocamlVersion + "+mingw32";
+		var opam = 'opam$bits.tar.xz';
+		var ocaml = CFG.ocamlVersion + '+mingw$bits';
 
 		if( !sys.FileSystem.exists("bin") ) {
 			// install opam
@@ -116,11 +129,11 @@ class Build {
 			deleteFile("install.sh");
 		}
 
-		// copy necessary runtime files so they are added to PATH in Config
+		// copy necessary runtime files from our local mingw to our local bin so they are added to PATH in Config
 		for( lib in CFG.mingwLibs ) {
 			var out = "bin/"+lib+".dll";
 			if( !sys.FileSystem.exists(out) )
-				sys.io.File.copy("mingw/usr/i686-w64-mingw32/sys-root/mingw/bin/"+lib+".dll",out);
+				sys.io.File.copy('mingw/usr/$mingw/sys-root/mingw/bin/'+lib+".dll",out);
 		}
 
 		var cwd = Sys.getCwd().split("\\").join("/");
@@ -128,9 +141,16 @@ class Build {
 
 		// temporarily modify the env
 		// setting cygwin with highest priority is necessary
-		Sys.putEnv("PATH", cwd+"bin;" + cygwinPath + ";" + Sys.getEnv("PATH"));
+		Sys.putEnv("PATH", [
+			cwd+"bin",
+			cygwinPath + "bin",
+			opamRoot+"/"+ocaml+"/bin",
+			Sys.getEnv("PATH")
+		].join(";"));
 		Sys.putEnv("OPAMROOT", opamRoot);
-
+		Sys.putEnv("OCAMLLIB", opamRoot+"/"+ocaml+"/lib/ocaml");
+		Sys.putEnv("OCAMLFIND_CONF", opamRoot+"/"+ocaml+"/lib/findlib.conf");
+	
 		if( !sys.FileSystem.exists(opamRoot) )
 			cygCommand("opam",["init","--yes","default","https://github.com/fdopen/opam-repository-mingw.git","--comp",ocaml,"--switch",ocaml]);
 

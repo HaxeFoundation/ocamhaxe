@@ -2,6 +2,7 @@
 class Config {
 
 	static var CFG : {
+		var is64 : Bool;
 		var ocamlVersion : String;
 		var cygwinTools : Array<String>;
 		var mingwLibs : Array<String>;
@@ -77,14 +78,15 @@ class Config {
 			cygwinPath = StringTools.trim(p.stdout.readAll().toString()).substr(0,-15);
 			log("Cygwin found in "+cygwinPath);
 
+			var mingw = CFG.is64 ? "x86_64-w64-mingw32" : "i686-w64-mingw32";
 			for( f in CFG.cygwinTools )
-				if( !sys.FileSystem.exists(cygwinPath+"/bin/"+f+".exe") )
+				if( !sys.FileSystem.exists(cygwinPath+"/bin/"+f.split("$MINGW").join(mingw)+".exe") )
 					throw "Missing required cygwin tool: "+f;
 
-			var mingw = cygwinPath+"/usr/i686-w64-mingw32/sys-root/mingw";
+			var mingwPath = cygwinPath+'/usr/$mingw/sys-root/mingw';
 			for( lib in CFG.mingwLibs )
-				if( !sys.FileSystem.exists(mingw+"/bin/"+lib+".dll") )
-					throw "Missing mingw library: "+lib+" (in "+mingw+"/bin)";
+				if( !sys.FileSystem.exists('$mingwPath/bin/$lib.dll') )
+					throw "Missing mingw library: "+lib+" (in "+mingwPath+"/bin)";
 
 		} else {
 			log("Cygwin not found");
