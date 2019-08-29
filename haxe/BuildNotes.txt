@@ -1,0 +1,10 @@
+TroubleShoot
+
+- dumpbin.exe : located in MSVC
+	set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;%PATH%
+	
+- tar freezing : 
+	move your cygwin/bin in PATH before Windows/System32 - check that "where tar" points at Cygwin version
+	
+- slow "Processing actions" :
+	wait. eventually disable Windows Defender "realtime protection" (MsMpEng)
