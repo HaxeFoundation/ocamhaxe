@@ -51,7 +51,7 @@ class Build {
 			cygCopyFile("bin/"+f);
 		}
 	}
-	
+
 	function getExePath( exeFile : String ) {
 		var p = new sys.io.Process("where.exe",[exeFile]);
 		if( p.exitCode() != 0 )
@@ -99,12 +99,12 @@ class Build {
 	function build() {
 
 		// build minimal mingw distrib to use if the user doesn't have cygwin installed
-		
+
 		var bits = CFG.is64 ? 64 : 32;
 		var mingw = CFG.is64 ? "x86_64-w64-mingw32" : "i686-w64-mingw32";
 
 		detectCygwin();
-			
+
 		Sys.println("Preparing mingw distrib...");
 		makeDir("mingw/bin");
 		for( f in CFG.cygwinTools )
@@ -123,7 +123,7 @@ class Build {
 		if( !sys.FileSystem.exists("bin") ) {
 			// install opam
 			deleteFile(opam);
-			command("wget",["https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.1/"+opam]);
+			command("wget",[CFG.opamUrl+opam]);
 			command("tar",["-xf",opam,"--strip-components","1"]);
 			deleteFile(opam);
 			deleteFile("install.sh");
@@ -150,7 +150,7 @@ class Build {
 		Sys.putEnv("OPAMROOT", opamRoot);
 		Sys.putEnv("OCAMLLIB", opamRoot+"/"+ocaml+"/lib/ocaml");
 		Sys.putEnv("OCAMLFIND_CONF", opamRoot+"/"+ocaml+"/lib/findlib.conf");
-	
+
 		if( !sys.FileSystem.exists(opamRoot) )
 			cygCommand("opam",["init","--yes","default","https://github.com/fdopen/opam-repository-mingw.git","--comp",ocaml,"--switch",ocaml]);
 

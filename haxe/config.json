@@ -1,7 +1,8 @@
 {
 	"is64": true,
-	"ocamlVersion" : "4.03.0",
+	"ocamlVersion" : "4.08.0",
 	"cygwinTools" : ["bash", "cygpath", "$MINGW-ar", "$MINGW-as", "$MINGW-gcc", "$MINGW-ld", "$MINGW-ranlib", "ls", "make", "mkdir", "wget", "mv", "rm", "sed", "sh", "stty", "tput", "tr", "true", "cp", "m4"],
 	"mingwLibs" : ["zlib1", "libpcre-1"],
-	"opamLibs" : ["sedlex","camlp4","merlin","extlib","xml-light","rope","ptmap","sha"]
+	"opamUrl" : "https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.2/",
+	"opamLibs" : ["sedlex","camlp5","merlin","extlib","xml-light","rope","ptmap","sha"]
 }

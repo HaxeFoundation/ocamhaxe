@@ -7,6 +7,7 @@ class Config {
 		var cygwinTools : Array<String>;
 		var mingwLibs : Array<String>;
 		var opamLibs : Array<String>;
+		var opamUrl : String;
 	} = loadConfig();
 
 	static function loadConfig() {
