@@ -27,22 +27,22 @@ class Config {
 		if( r != 0 ) throw "Command exit with code "+r;
 	}
 
-	function wide2utf( s : String ) {
+	function wide2utf( s : haxe.io.Bytes ) {
 		var b = new haxe.Utf8();
 		for( i in 0...s.length>>1 ) {
-			var c = s.charCodeAt(i<<1) | (s.charCodeAt((i<<1) + 1) << 8);
+			var c = s.get(i<<1) | (s.get((i<<1) + 1) << 8);
 			b.addChar(c);
 		}
 		return b.toString();
 	}
 
 	function utf2wide( s : String ) {
-		var buf = new StringBuf();
+		var buf = new haxe.io.BytesBuffer();
 		haxe.Utf8.iter(s,function(c) {
-			buf.addChar(c&0xFF);
-			buf.addChar(c>>8);
+			buf.addByte(c&0xFF);
+			buf.addByte(c>>8);
 		});
-		return buf.toString();
+		return buf.getBytes();
 	}
 
 	function utf2hex( s : String ) {
@@ -95,7 +95,7 @@ class Config {
 		// get environment
 		log("Querying environment...");
 		command("regedit",["/E",temp,"HKEY_CURRENT_USER\\Environment"]);
-		var data = try sys.io.File.getContent(temp);
+		var data = try sys.io.File.getBytes(temp);
 		sys.FileSystem.deleteFile(temp);
 		var data = wide2utf(data).split("\r\n");
 
@@ -133,7 +133,9 @@ class Config {
 		regConf = regConf.split("$newPath").join(utf2hex(foundPath));
 
 		var f = sys.io.File.write(temp);
-		f.writeString("\xFF\xFE"+utf2wide(regConf));
+		f.writeByte(0xFF);
+		f.writeByte(0xFE);
+		f.write(utf2wide(regConf));
 		f.close();
 		command("regedit",["/S",temp]);
 
