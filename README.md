@@ -2,7 +2,9 @@
 
 OCaml distribution for Haxe compilation
 
-If you have download this as a distribution, simply run `config.bat` to have it setup on your system.
+# Install
+
+Download the [Latest Release](https://github.com/haxeFoundation/ocamhaxe/releases/latest) then simply run `config.bat` to have it setup on your system.
 
 # Build
 
