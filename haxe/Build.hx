@@ -152,9 +152,11 @@ class Build {
 		Sys.putEnv("OCAMLFIND_CONF", opamRoot+"/"+ocaml+"/lib/findlib.conf");
 
 		if( !sys.FileSystem.exists(opamRoot) )
-			cygCommand("opam",["init","--yes","default","https://github.com/fdopen/opam-repository-mingw.git","--comp",ocaml,"--switch",ocaml]);
+			cygCommand("opam",["init","--yes","default","https://github.com/ocaml-opam/opam-repository-mingw.git#sunset","--comp",ocaml,"--switch",ocaml]);
 
 		cygCommand("opam",["switch",ocaml]);
+		cygCommand("opam",["repo", "set-url", "fallback", "https://github.com/ocaml/opam-repository.git"]);
+		cygCommand("opam",["repo", "set-repos", "default", "fallback"]);
 		cygCommand("opam",["install","--yes"].concat(CFG.opamLibs));
 
 		Sys.println("DONE");
