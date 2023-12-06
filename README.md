@@ -15,9 +15,13 @@ Required Cygwin64 packages are:
   - m4
   - patch
   - unzip
+  - perl
+  - perl-IPC-System-Simple
+  - libpcre2-devel
   - mingw64-x86_64-gcc-core
   - mingw64-x86_64-zlib
   - mingw64-x86_64-pcre
+  - mingw64-x86_64-pcre2
  
 (or for 32 bits):
   - mingw[64]-i686-gcc-core
@@ -27,7 +31,9 @@ Required Cygwin64 packages are:
 Troubleshoot:
 
 - You need to run `Build.exe` from the command line (`cmd`) to watch for errors
+  - If you have Haxe installed, you can also run `haxe --interp --main Build` from the `haxe` folder
 - In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires having git for Cygwin installed (prevents windows newline issues). Also make sure that your system PATH has Cygwin at the highest priority to prevent clashes.
+- Download and unzip `mingw64-uv` `mingw64-mbedtls` to your Cygwin install folder, from the link provided in `haxe/config.json/mingwPackages`
 
 ### About
 
