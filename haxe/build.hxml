@@ -1,4 +1,4 @@
-build_base.hxml
+build-base.hxml
 -cpp bin
 -cmd copy bin\build.exe .
 -cmd rm -rf bin
