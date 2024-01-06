@@ -3,6 +3,7 @@ import haxe.io.Path;
 typedef BuildConfig = {
 	var skipMinGWCopy:Bool;
 	var skipOpamSetup:Bool;
+	var skipOpamRepoInit:Bool;
 }
 
 class Build {
@@ -178,12 +179,14 @@ class Build {
 		Sys.putEnv("OCAMLLIB", opamRoot+"/"+ocaml+"/lib/ocaml");
 		Sys.putEnv("OCAMLFIND_CONF", opamRoot+"/"+ocaml+"/lib/findlib.conf");
 
-		if( !sys.FileSystem.exists(opamRoot) )
-			cygCommand("opam",["init","--yes","default","https://github.com/ocaml-opam/opam-repository-mingw.git#sunset","--comp",ocaml,"--switch",ocaml]);
+		if (!config.skipOpamRepoInit) {
+			if( !sys.FileSystem.exists(opamRoot) )
+				cygCommand("opam",["init","--yes","default","https://github.com/ocaml-opam/opam-repository-mingw.git#sunset","--comp",ocaml,"--switch",ocaml]);
 
-		cygCommand("opam",["switch",ocaml]);
-		cygCommand("opam",["repo", "add", "fallback", "https://github.com/ocaml/opam-repository.git"]);
-		cygCommand("opam",["repo", "set-repos", "default", "fallback"]);
+			cygCommand("opam",["switch",ocaml]);
+			cygCommand("opam",["repo", "add", "fallback", "https://github.com/ocaml/opam-repository.git"]);
+			cygCommand("opam",["repo", "set-repos", "default", "fallback"]);
+		}
 		cygCommand("opam",["install","--yes"].concat(CFG.opamLibs));
 
 		Sys.println("DONE");
@@ -193,7 +196,8 @@ class Build {
 		if( sys.FileSystem.exists("Build.hx") ) Sys.setCwd("..");
 		var config = {
 			skipMinGWCopy: false,
-			skipOpamSetup: false
+			skipOpamSetup: false,
+			skipOpamRepoInit: false
 		}
 
 		#if hxargs
@@ -208,6 +212,11 @@ class Build {
 			@doc("Skip opam setup")
 			"--skip-opam-setup" => function() {
 				config.skipOpamSetup = true;
+			},
+
+			@doc("Skip opam repository init")
+			"--skip-opam-repo-init" => function() {
+				config.skipOpamRepoInit = true;
 			},
 
 			@doc("Show this help message")
