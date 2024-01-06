@@ -1,8 +1,17 @@
+import haxe.io.Path;
+
 class Build {
 
 	static var CFG = @:privateAccess Config.CFG;
 
-	var cygwinPath : String;
+	var cygwinPath(default, set) : String;
+	var cygwinBinPath : String;
+
+	function set_cygwinPath(value:String) {
+		this.cygwinPath = value;
+		cygwinBinPath = Path.join([cygwinPath, "bin"]);
+		return value;
+	}
 
 	function new() {
 	}
@@ -124,7 +133,7 @@ class Build {
 			// install opam
 			deleteFile(opam);
 			command("wget",[CFG.opamUrl+opam]);
-			command("tar",["-xf",opam,"--strip-components","1"]);
+			command(Path.join([cygwinBinPath, "tar"]),["-xf",opam,"--strip-components","1"]);
 			deleteFile(opam);
 			deleteFile("install.sh");
 		}
