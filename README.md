@@ -33,7 +33,7 @@ Troubleshoot:
 - You need to run `Build.exe` from the command line (`cmd`) to watch for errors
   - If you have Haxe installed, you can also run `haxe --interp --main Build` from the `haxe` folder
 - In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires having git for Cygwin installed (prevents windows newline issues). Also make sure that your system PATH has Cygwin at the highest priority to prevent clashes.
-- If you get `Access Denied` when runnning `Build.exe`, checkout again the ocamhaxe repository using Git For Windows
+- If you get `Access Denied` when runnning `Build.exe`, checkout again the ocamhaxe repository using Git For Windows. Note that rebuilding the .exe files without deleting them might still cause this error.
 - Download and unzip `mingw64-uv` `mingw64-mbedtls` to your Cygwin install folder, from the link provided in `haxe/config.json/mingwPackages`
 - If there's a process failure related to dumpbin.exe, you can either:
 	1. find it in your Visual Studio installation (somewhere in the depths of C:\Program Files (x86)\Microsoft Visual Studio) and add its containing directory to your PATH, or

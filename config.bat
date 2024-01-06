@@ -25,3 +25,4 @@ if '%errorlevel%' NEQ '0' (
 :--------------------------------------
 
 haxe\config.exe
+pause
