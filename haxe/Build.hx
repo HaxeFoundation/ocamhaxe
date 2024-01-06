@@ -27,7 +27,13 @@ class Build {
 	}
 
 	function deleteFile(path:String) {
-		try sys.FileSystem.deleteFile(path) catch(e : Dynamic) {}
+		try {
+			log('> rm $path');
+			sys.FileSystem.deleteFile(path);
+		}
+		catch(e : Dynamic) {
+
+		}
 	}
 
 	function makeDir(path:String) {
@@ -132,7 +138,7 @@ class Build {
 		if( !sys.FileSystem.exists("bin") ) {
 			// install opam
 			deleteFile(opam);
-			command("wget",[CFG.opamUrl+opam]);
+			command("wget",[CFG.opamUrl+opam, "-q"]);
 			command(Path.join([cygwinBinPath, "tar"]),["-xf",opam,"--strip-components","1"]);
 			deleteFile(opam);
 			deleteFile("install.sh");
