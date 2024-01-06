@@ -22,7 +22,7 @@ Required Cygwin64 packages are:
   - mingw64-x86_64-zlib
   - mingw64-x86_64-pcre
   - mingw64-x86_64-pcre2
- 
+
 (or for 32 bits):
   - mingw[64]-i686-gcc-core
   - mingw[64]-i686-zlib
@@ -35,14 +35,18 @@ Troubleshoot:
 - In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires having git for Cygwin installed (prevents windows newline issues). Also make sure that your system PATH has Cygwin at the highest priority to prevent clashes.
 - If you get `Access Denied` when runnning `Build.exe`, checkout again the ocamhaxe repository using Git For Windows
 - Download and unzip `mingw64-uv` `mingw64-mbedtls` to your Cygwin install folder, from the link provided in `haxe/config.json/mingwPackages`
+- If there's a process failure related to dumpbin.exe, you can either:
+	1. find it in your Visual Studio installation (somewhere in the depths of C:\Program Files (x86)\Microsoft Visual Studio) and add its containing directory to your PATH, or
+	2. run ocamhaxe in a developer command prompt from within Visual Studio.
+- If "Processing actions" takes a long time, try disabling Windows Defender realtime protection (MsMpEng).
 
 ### About
 
 There are two distinct scripts:
 
-- `haxe/Build.hx` will build an ocamhaxe repo from scratch, that can be zip'ed and distributed to users as-it. It should contain everything needed to compile & run haxe and its libraries, without any additional requirement 
+- `haxe/Build.hx` will build an ocamhaxe repo from scratch, that can be zip'ed and distributed to users as-it. It should contain everything needed to compile & run haxe and its libraries, without any additional requirement
 
-- `haxe/Config.hx` will setup the computer (env vars etc.) on the client computer that has downloaded the ocamhaxe distribution. It is triggered by `config.bat` so runs from the toplevel directory. 
+- `haxe/Config.hx` will setup the computer (env vars etc.) on the client computer that has downloaded the ocamhaxe distribution. It is triggered by `config.bat` so runs from the toplevel directory.
 
 - both are precompiled using hxcpp so they can get run on a system even if no haxe is available.
 
