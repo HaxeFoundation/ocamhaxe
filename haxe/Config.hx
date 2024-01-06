@@ -1,4 +1,5 @@
 
+@:haxe.warning("-WDeprecated")
 class Config {
 
 	static var CFG : {
@@ -126,7 +127,7 @@ class Config {
 			else
 				foundPath += ";%OCAMHAXE%";
 		}
-			
+
 		// apply environment changes
 		// using regedit is the best to preserve PATH with special chars
 		log("Updating Environment...");

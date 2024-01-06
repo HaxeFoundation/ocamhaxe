@@ -1,8 +1,15 @@
 import haxe.io.Path;
 
+typedef BuildConfig = {
+	var skipMinGWCopy:Bool;
+	var skipOpamSetup:Bool;
+}
+
 class Build {
 
 	static var CFG = @:privateAccess Config.CFG;
+
+	var config:BuildConfig;
 
 	var cygwinPath(default, set) : String;
 	var cygwinBinPath : String;
@@ -13,7 +20,8 @@ class Build {
 		return value;
 	}
 
-	function new() {
+	function new(config:BuildConfig) {
+		this.config = config;
 	}
 
 	function log( msg : String ) {
@@ -120,28 +128,32 @@ class Build {
 
 		detectCygwin();
 
-		Sys.println("Preparing mingw distrib...");
-		makeDir("mingw/bin");
-		for( f in CFG.cygwinTools )
-			cygCopyFile("bin/"+ f.split("$MINGW").join(mingw) + ".exe");
-		cygCopyDir('usr/$mingw');
-		cygCopyDir('lib/gcc/$mingw');
-		makeDir("mingw/tmp");
-
-		// build opam repo with packages necessary for haxe
-
-		Sys.println("Preparing opam...");
+		if (!config.skipMinGWCopy) {
+			Sys.println("Preparing mingw distrib...");
+			makeDir("mingw/bin");
+			for( f in CFG.cygwinTools )
+				cygCopyFile("bin/"+ f.split("$MINGW").join(mingw) + ".exe");
+			cygCopyDir('usr/$mingw');
+			cygCopyDir('lib/gcc/$mingw');
+			makeDir("mingw/tmp");
+		}
 
 		var opam = 'opam$bits.tar.xz';
 		var ocaml = CFG.ocamlVersion + '+mingw$bits';
 
-		if( !sys.FileSystem.exists("bin") ) {
-			// install opam
-			deleteFile(opam);
-			command("wget",[CFG.opamUrl+opam, "-q"]);
-			command(Path.join([cygwinBinPath, "tar"]),["-xf",opam,"--strip-components","1"]);
-			deleteFile(opam);
-			deleteFile("install.sh");
+		if (!config.skipOpamSetup) {
+			// build opam repo with packages necessary for haxe
+
+			Sys.println("Preparing opam...");
+
+			if( !sys.FileSystem.exists("bin") ) {
+				// install opam
+				deleteFile(opam);
+				command("wget",[CFG.opamUrl+opam, "-q"]);
+				command(Path.join([cygwinBinPath, "tar"]),["-xf",opam,"--strip-components","1"]);
+				deleteFile(opam);
+				deleteFile("install.sh");
+			}
 		}
 
 		// copy necessary runtime files from our local mingw to our local bin so they are added to PATH in Config
@@ -179,7 +191,38 @@ class Build {
 
 	static function main() {
 		if( sys.FileSystem.exists("Build.hx") ) Sys.setCwd("..");
-		new Build().build();
+		var config = {
+			skipMinGWCopy: false,
+			skipOpamSetup: false
+		}
+
+		#if hxargs
+		var help = false;
+
+		var argParser = hxargs.Args.generate([
+			@doc("Skip copy to mingw directory so the program can execute without dumpbin")
+			"--skip-mingw-copy" => function() {
+				config.skipMinGWCopy = true;
+			},
+
+			@doc("Skip opam setup")
+			"--skip-opam-setup" => function() {
+				config.skipOpamSetup = true;
+			},
+
+			@doc("Show this help message")
+			"--help" => function() {
+				help = true;
+			}
+		]);
+		argParser.parse(Sys.args());
+
+		if (help) {
+			Sys.println(argParser.getDoc());
+			Sys.exit(0);
+		}
+		#end
+		new Build(config).build();
 	}
 
 }
