@@ -170,7 +170,7 @@ class Build {
 			cygCommand("opam",["init","--yes","default","https://github.com/ocaml-opam/opam-repository-mingw.git#sunset","--comp",ocaml,"--switch",ocaml]);
 
 		cygCommand("opam",["switch",ocaml]);
-		cygCommand("opam",["repo", "set-url", "fallback", "https://github.com/ocaml/opam-repository.git"]);
+		cygCommand("opam",["repo", "add", "fallback", "https://github.com/ocaml/opam-repository.git"]);
 		cygCommand("opam",["repo", "set-repos", "default", "fallback"]);
 		cygCommand("opam",["install","--yes"].concat(CFG.opamLibs));
 
