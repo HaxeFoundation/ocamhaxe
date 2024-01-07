@@ -57,8 +57,16 @@ class Build {
 
 	function cygCopyFile( file : String ) {
 
+		var source = cygwinPath + "/" + file;
+		var destination = "mingw/" + file;
 		copiedFiles.set(file, true);
-		try sys.io.File.copy(cygwinPath + "/" + file, "mingw/" + file) catch( e : Dynamic ) log("*** MISSING " + file+" in your Cygwin install ***");
+		try {
+			var path = new Path(destination);
+			makeDir(path.dir);
+			sys.io.File.copy(source, destination);
+		 } catch( e : Dynamic ) {
+			log('*** Could not copy $source to $destination: $e ***');
+		 }
 
 		if( !StringTools.endsWith(file.toLowerCase(),".exe") && !StringTools.endsWith(file.toLowerCase(),".dll") )
 			return;
