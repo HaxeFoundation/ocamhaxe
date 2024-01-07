@@ -187,15 +187,40 @@ class Build {
 		Sys.putEnv("OCAMLLIB", opamRoot+"/"+ocaml+"/lib/ocaml");
 		Sys.putEnv("OCAMLFIND_CONF", opamRoot+"/"+ocaml+"/lib/findlib.conf");
 
-		if (!config.skipOpamRepoInit) {
-			if( !sys.FileSystem.exists(opamRoot) )
-				cygCommand("opam",["init","--yes","default","https://github.com/ocaml-opam/opam-repository-mingw.git#sunset","--comp",ocaml,"--switch",ocaml]);
+		var sunsetName = "mingw-sunset";
+		var defaultName = "default";
 
-			cygCommand("opam",["switch",ocaml]);
-			cygCommand("opam",["repo", "add", "fallback", "https://github.com/ocaml/opam-repository.git"]);
-			cygCommand("opam",["repo", "set-repos", "default", "fallback"]);
+		if (!config.skipOpamRepoInit) {
+			var sunsetRepo = "https://github.com/ocaml-opam/opam-repository-mingw.git#sunset";
+			if( !sys.FileSystem.exists(opamRoot) ) {
+				cygCommand("opam", ["init", "--yes", sunsetName, sunsetRepo, "--comp", ocaml, "--switch", ocaml]);
+			}
+
+			// Explicitly add the repo again in case the branch above was missed
+			cygCommand("opam", ["repo", "add", sunsetName, sunsetRepo, "--all", "--set-default"]);
+
+			try {
+				// An existing opam might have other repos, so be explicit about the mingw-sunset usage
+				cygCommand("opam", ["switch", "create", ocaml, '--repositories=$sunsetName']);
+			} catch (e:Dynamic) {
+				// This probably failed because the switch exists already, so let's just switch
+				log('Could not `switch create $ocaml`, trying to just switch');
+				cygCommand("opam", ["switch", ocaml]);
+			}
+
+			// Now we add the default
+			cygCommand("opam",["repo", "add", defaultName, "https://github.com/ocaml/opam-repository.git", "--all"]);
 		}
-		cygCommand("opam",["install","--yes"].concat(CFG.opamLibs));
+
+		// Make sure mingw-sunset is prioritized for camlp5 because we need the Windows patch there
+		cygCommand("opam",["repo", "set-repos", sunsetName, defaultName]);
+		cygCommand("opam", ["install", "--yes", "camlp5.8.00.03"]);
+
+		// Flip the order afterwards because some updates like luv 0.5.12 aren't available in mingw-sunset
+		cygCommand("opam",["repo", "set-repos", defaultName, sunsetName]);
+
+		// Do what we actually came here for
+		cygCommand("opam",["install", "--yes"].concat(CFG.opamLibs));
 
 		Sys.println("DONE");
 	}
