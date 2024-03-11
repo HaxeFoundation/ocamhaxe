@@ -13,6 +13,7 @@ If you have cloned the repository, you need to run the `Build.exe` script in /bu
 Required Cygwin64 packages are:
   - wget
   - m4
+  - make
   - patch
   - unzip
   - perl
