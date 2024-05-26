@@ -21,6 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Please note that precompiled files may contain third party libraries 
-(usually standard library of programming language), whose are not covered 
-by this license and can be used only for running those precompiled programs 
+(usually standard library of programming language), whose may not be covered 
+by this license and can be used only for with those precompiled programs 
 or under their own license.
