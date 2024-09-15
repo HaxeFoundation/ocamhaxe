@@ -25,11 +25,11 @@ class Build {
 		this.config = config;
 	}
 
-	function log( msg : String ) {
+	static function log( msg : String ) {
 		Sys.println(msg);
 	}
 
-	function error(msg:String) {
+	static function error(msg:String) {
 		log('[ERROR] $msg');
 	}
 
@@ -247,6 +247,11 @@ class Build {
 		if (help) {
 			Sys.println(argParser.getDoc());
 			Sys.exit(0);
+		}
+		#else
+		if (Sys.args().length > 0) {
+			error("Command line arguments are only supported with -lib hxargs");
+			Sys.exit(1);
 		}
 		#end
 		new Build(config).build();
