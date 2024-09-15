@@ -29,6 +29,10 @@ class Build {
 		Sys.println(msg);
 	}
 
+	function error(msg:String) {
+		log('[ERROR] $msg');
+	}
+
 	function command(cmd,args:Array<String>) {
 		log("> "+cmd+" "+args.join(" "));
 		var r = Sys.command(cmd,args);
@@ -72,7 +76,13 @@ class Build {
 			return;
 
 		// look for dll dependencies
-		var o = new sys.io.Process("dumpbin.exe",["/IMPORTS","mingw/"+file]);
+		var o = try {
+			new sys.io.Process("dumpbin.exe",["/IMPORTS","mingw/"+file]);
+		} catch(e:Dynamic) {
+			error("Could not execute dumpbin, make sure it's in your PATH or run from a Visual Studio CLI");
+			Sys.exit(1);
+			null;
+		}
 		var lines = o.stdout.readAll().toString().split("\n");
 		o.exitCode();
 		var r = ~/^[A-Za-z0-9_-]+\.dll$/;
@@ -95,7 +105,7 @@ class Build {
 	function detectCygwin() {
 		var path = getExePath("cygpath.exe");
 		if( path == null ) {
-			log("Cygwin not found");
+			error("Cygwin not found");
 			Sys.exit(1);
 		}
 		cygwinPath = path.substr(0,-3);
