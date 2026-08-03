@@ -8,6 +8,8 @@ This is AI-based installer. Just checkout the repo and ask it to follow the inst
 
 # Instructions
 
+For **AI only**, humans : read above.
+
 - read the KNOWLEDGE.md file if it exists. it might be outdated so be aware.
 - locate the haxe git checkout on this computer
 - verify that vscode is installed
