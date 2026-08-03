@@ -2,53 +2,23 @@
 
 OCaml distribution for Haxe compilation
 
-# Install
+Installing OCaml is not very easy on a Windows system and vary depending on what you have already installed on your computer.
 
-Download the [Latest Release](https://github.com/haxeFoundation/ocamhaxe/releases/latest) then simply run `config.bat` to have it setup on your system.
+This is AI-based installer. Just checkout the repo and ask it to follow the instructions stored in this file.
 
-# Build
+# Instructions
 
-If you have cloned the repository, you need to run the `Build.exe` script in /build to rebuild the ocamhaxe distribution. This requires Cygwin 64 bits + Dumpbin.exe windows utility (part of Visual Studio)
-
-Required Cygwin64 packages are:
-  - wget
-  - m4
-  - make
-  - patch
-  - unzip
-  - perl
-  - perl-IPC-System-Simple
-  - libpcre2-devel
-  - mingw64-x86_64-gcc-core
-  - mingw64-x86_64-zlib
-  - mingw64-x86_64-pcre
-  - mingw64-x86_64-pcre2
-
-(or for 32 bits):
-  - mingw[64]-i686-gcc-core
-  - mingw[64]-i686-zlib
-  - mingw[64]-i686-pcre
-
-Troubleshoot:
-
-- You need to run `Build.exe` from the command line (`cmd`) to watch for errors
-  - If you have Haxe installed, you can also run `haxe --interp --main Build` from the `haxe` folder
-- In some cases there is an error about `prims.c` not compiling when building the ocaml compiler. It requires having git for Cygwin installed (prevents windows newline issues). Also make sure that your system PATH has Cygwin at the highest priority to prevent clashes.
-- If you get `Access Denied` when runnning `Build.exe`, checkout again the ocamhaxe repository using Git For Windows. Note that rebuilding the .exe files without deleting them might still cause this error.
-- Download and unzip `mingw64-uv` `mingw64-mbedtls` to your Cygwin install folder, from the link provided in `haxe/config.json/mingwPackages`
-- If there's a process failure related to dumpbin.exe, you can either:
-	1. find it in your Visual Studio installation (somewhere in the depths of C:\Program Files (x86)\Microsoft Visual Studio) and add its containing directory to your PATH, or
-	2. run ocamhaxe in a developer command prompt from within Visual Studio.
-- If "Processing actions" takes a long time, try disabling Windows Defender realtime protection (MsMpEng).
-
-### About
-
-There are two distinct scripts:
-
-- `haxe/Build.hx` will build an ocamhaxe repo from scratch, that can be zip'ed and distributed to users as-it. It should contain everything needed to compile & run haxe and its libraries, without any additional requirement
-
-- `haxe/Config.hx` will setup the computer (env vars etc.) on the client computer that has downloaded the ocamhaxe distribution. It is triggered by `config.bat` so runs from the toplevel directory.
-
-- both are precompiled using hxcpp so they can get run on a system even if no haxe is available.
-
-- both are referencing `haxe/config.json` which contains cygwin tools / opam libs to install etc. mostly used for the build process or to check in Config if the cygwin already installed on the computer have all the necessary tools/libs
+- read the KNOWLEDGE.md file if it exists. it might be outdated so be aware.
+- locate the haxe git checkout on this computer
+- verify that vscode is installed
+- download the latest release of OPAM and put it as opam.exe in the haxe/opam directory
+- start the opam init, use the localy installed cygwin if asked or install a new one
+- once init finish, add the directory where opam store its binaries to the system PATH
+- check that ocamlopt is available from the windows commandline
+- install the opam dependencies required by haxe. give progress info to the user. solve the errors if any
+- build haxe from the Makefile.win. solve the errors if any
+- check that it builds from VSCode as well
+- congratulate the user when you're done. use a lot of emojis.
+- as you run, store any knowledge you learn in KNOWLEDGE.md that can help future users to install more quickly
+- do not store any machine specific path or identifier in KNOWLEDGE.md, just general problems solving
+- in the end, give a quick summary of what was changed on the machine, in particular the changed env vars
